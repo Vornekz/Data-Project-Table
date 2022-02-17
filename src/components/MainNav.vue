@@ -1,63 +1,66 @@
 <template>
-<section >
-  <div class="mainNav">
-  <div class="select">
-    <label for="actions" class="select__label"><span>{{selectedCheckbox}}</span>  selected</label>
-    <select name="actions" id="actions" class="select__actions">
-      <option value="Actions" selected hidden>Actions</option>
-      <option value="Edit">Edit</option>
-      <option value="Archive">Archive</option>
-      <option value="Delete">Delete</option>
-    </select>
-    <button class="select__button">&#10005;</button>
-  </div>
-  <form class="search">
-    <div class="search__filter">
-      <label for="group" class="search__filter-label">
+  <section>
+    <div class="mainNav">
+      <div class="select">
+        <label for="actions" class="select__label"><span>{{ selectedCheckbox }}</span> selected</label>
+        <select name="actions" id="actions" class="select__actions">
+          <option value="Actions" selected hidden>Actions</option>
+          <option value="Edit">Edit</option>
+          <option value="Archive">Archive</option>
+          <option value="Delete">Delete</option>
+        </select>
+        <button class="select__button">&#10005;</button>
+      </div>
+      <form class="search">
+        <div class="search__filter">
+          <label for="group" class="search__filter-label">
+            <svg>
+              <use xlink:href="@/assets/sprite.svg#group"></use>
+            </svg>
+          </label>
+          <select name="group" id="group" class="search__filter-select">
+            <option value="All" selected hidden>All</option>
+          </select>
+        </div>
+        <div class="search__input">
+          <label for="search" class="search__input-label">
+            <svg>
+              <use xlink:href="@/assets/sprite.svg#search"></use>
+            </svg>
+          </label>
+          <input type="search" name="search" id="search" class="search__input-place" placeholder="Search">
+        </div>
+      </form>
+      <button class="mainNav__button">
         <svg>
-          <use xlink:href="@/assets/sprite.svg#group"></use>
+          <use xlink:href="@/assets/sprite.svg#plus"></use>
         </svg>
-      </label>
-      <select name="group" id="group" class="search__filter-select">
-        <option value="All" selected hidden>All</option>
-      </select>
+        New Project
+      </button>
     </div>
-    <div class="search__input">
-      <label for="search" class="search__input-label">
-        <svg>
-          <use xlink:href="@/assets/sprite.svg#search"></use>
-        </svg>
-      </label>
-      <input type="search" name="search" id="search" class="search__input-place" placeholder="Search">
-    </div>
-  </form>
-  <button class="mainNav__button">
-    <svg>
-      <use xlink:href="@/assets/sprite.svg#plus"></use>
-    </svg>
-    New Project
-  </button>
-  </div>
-  <MainNavGroup class="mainNavGroup"/>
-</section>
+    <MainNavGroup class="mainNavGroup"/>
+    <CreateProject/>
+  </section>
 </template>
 
 <script lang="ts">
 import Vue from "vue";
 import {Component} from "vue-property-decorator";
 import MainNavGroup from "@/components/MainNavGroup.vue"
+import CreateProject from "@/components/CreateProject.vue";
 
 @Component({
   name: "MainNav",
   components: {
-    MainNavGroup
+    MainNavGroup,
+    CreateProject
   },
 })
 
-export default class MainNav extends Vue{
+export default class MainNav extends Vue {
 
-  get selectedCheckbox():number {
-      return 24
+  get selectedCheckbox(): number {
+    return 24
   }
 
 }

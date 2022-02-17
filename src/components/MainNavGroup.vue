@@ -1,108 +1,82 @@
 <template>
- <div class="group">
-   <div class="group__element"
-        v-for="(element, i) in group"
-        :key="`element-${i}`">
-     <p class="group__element-text">{{ element.name }}</p>
-     <span class="group__element-count">{{ element.count }}</span>
-   </div>
- </div>
+  <div class="group">
+    <div class="group__element"
+         v-for="(element, i) in group"
+         :key="`element-${i}`"
+         :class="{'selected': element.selected}"
+         @click="selectElement(i)"
+    >
+      <p class="group__element-text">{{ element.name }}</p>
+      <span class="group__element-count">{{ element.count }}</span>
+    </div>
+  </div>
 </template>
 
 <script lang="ts">
+import {Component} from "vue-property-decorator";
+import Vue from "vue";
+
 interface GroupType {
-  allCount: {
-    name:string,
-    count: number,
-    selected: boolean
-  },
-  notStartedCount: {
-    name:string,
-    count: number,
-    selected: boolean
-  },
-  planingCount: {
-    name:string,
-    count: number,
-    selected: boolean
-  },
-  inProgressCount: {
-    name:string,
-    count: number,
-    selected: boolean
-  },
-  completedCount: {
-    name:string,
-    count: number,
-    selected: boolean
-  },
-  droppedCount: {
-    name:string,
-    count: number,
-    selected: boolean
-  },
-  archivedCount: {
-    name:string,
-    count: number,
-    selected: boolean
-  },
+  name: string,
+  count: number,
+  selected: boolean
 }
 
-export default {
-  name: "MainNav-group",
 
-  data() {
-    return {
-      group: {
-        allCount: {
-          name: "All",
-          count: 0,
-          selected: true
-        },
-        notStartedCount: {
-          name: "Not started",
-          count: 0,
-          selected: false
-        },
-        planingCount: {
-          name: "Planing",
-          count: 0,
-          selected: false
-        },
-        inProgressCount: {
-          name: "In progress",
-          count: 0,
-          selected: false
-        },
-        completedCount: {
-          name: "Completed",
-          count: 0,
-          selected: false
-        },
-        droppedCount: {
-          name: "Dropped",
-          count: 0,
-          selected: false
-        },
-        archivedCount: {
-          name: "Archived",
-          count: 0,
-          selected: false
-        },
+@Component({
+  name: "MainNavGroup"
+})
 
-      } as GroupType,
+export default class MainNavGroup extends Vue {
 
-      selectedIndex: 0 as number,
-    }
-  },
+  private group: GroupType[] = [
+    {
+      name: "All",
+      count: 0,
+      selected: true
+    },
+    {
+      name: "Not started",
+      count: 0,
+      selected: false
+    },
+    {
+      name: "Planing",
+      count: 0,
+      selected: false
+    },
+    {
+      name: "In progress",
+      count: 0,
+      selected: false
+    },
+    {
+      name: "Completed",
+      count: 0,
+      selected: false
+    },
+    {
+      name: "Dropped",
+      count: 0,
+      selected: false
+    },
+    {
+      name: "Archived",
+      count: 0,
+      selected: false
+    },
+  ];
 
-  methods: {
-    selectElement(index: number): void {
-      this.group[this.selectedIndex].selected = false;
+  private selectedIndex: number = 0;
 
-    }
+  selectElement(index: number): void {
+    this.group[this.selectedIndex].selected = false;
+    this.selectedIndex = index;
+    this.group[this.selectedIndex].selected = true;
   }
-};
+
+}
+
 </script>
 
 <style lang="scss" scoped>
@@ -111,7 +85,8 @@ export default {
 .group {
   display: grid;
   position: relative;
-  grid-template-columns: 1fr 1fr 1fr 1fr 1fr 1fr 200px;
+  grid-template-columns: 130px 130px 130px 130px 130px 130px 150px;
+  grid-column-gap: 20px;
   padding: 10px 30px;
 
   div:last-child {
@@ -119,7 +94,7 @@ export default {
       content: "";
       display: block;
       position: absolute;
-      left: 10%;
+      left: -10%;
       width: 1px;
       height: 100%;
       background-color: #D5DBE5;
@@ -145,7 +120,22 @@ export default {
     &-count {
       @include countCircle();
     }
+
   }
 
+  .selected {
+    color: #5E5ADB;
+
+    &:before {
+      content: "";
+      position: absolute;
+      bottom: -5px;
+      width: 100%;
+      height: 3px;
+      background-color: #5E5ADB;
+    }
+  }
 }
+
+
 </style>

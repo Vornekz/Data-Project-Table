@@ -16,13 +16,13 @@ import MainNav from "@/components/MainNav.vue"
   name: "App",
   components: {
     Header,
-    MainNav
+    MainNav,
   }
 })
 
- export default class App extends Vue{
+export default class App extends Vue {
 
- }
+}
 
 </script>
 
