@@ -67,7 +67,7 @@ export default class MainNav extends Vue {
 </script>
 
 <style lang="scss" scoped>
-@import "src/assets/mixins";
+@import "../assets/scss/mixins";
 
 .mainNav {
   display: grid;

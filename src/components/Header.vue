@@ -23,7 +23,7 @@ export default class Header extends Vue{
 </script>
 
 <style lang="scss" scoped>
-@import "src/assets/mixins";
+@import "../assets/scss/mixins";
 
 .header {
   display: flex;

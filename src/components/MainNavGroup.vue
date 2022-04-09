@@ -80,7 +80,7 @@ export default class MainNavGroup extends Vue {
 </script>
 
 <style lang="scss" scoped>
-@import "src/assets/mixins";
+@import "../assets/scss/mixins";
 
 .group {
   display: grid;

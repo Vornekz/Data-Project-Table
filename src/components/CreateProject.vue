@@ -4,13 +4,13 @@
       <h3>Add new Project</h3>
     </header>
     <form class="create__project" onsubmit="return false">
-      <div class="create__project-name project-name">
-        <label for="" class="project-name__label">
+      <div class="project-name">
+        <label for="projectName" class="project-name__label">
           Project name
         </label>
-        <input type="text" class="project-name__input" required maxlength="30">
+        <input type="text" class="project-name__input" required maxlength="30" id="projectName">
       </div>
-      <div class="create__project-status project-status">
+      <div class="project-status">
         <h4 class="project-status__title">Project status</h4>
         <label class="project-status__label"
                v-for="label in statusInput"
@@ -30,16 +30,37 @@
                v-model="checked"
                name="status"
         />
-
+      </div>
+      <div class="project-timeline">
+        <h4 class="project-timeline__title">Project timeline</h4>
+        <select name="timeGroup" id="timeGroup" v-model="select" class="project-timeline__select">
+          <option value="start" selected>Start time</option>
+          <option value="range">Range time</option>
+        </select>
+        <div class="project-timeline__date" v-if="select === 'start'">
+          <date-picker v-model="startTime" valueType="DD/MM/YYYY" format="DD/MM/YYYY" placeholder="DD/MM/YYYY" :required="select === 'start'">
+          </date-picker>
+        </div>
+        <div class="project-timeline__range" v-if="select === 'range'">
+          <date-picker v-model="rangeTime" valueType="DD/MM/YYYY" format="DD/MM/YYYY"
+                       placeholder="DD/MM/YYYY ~ DD/MM/YYYY"
+                       range :required="select === 'range'">
+          </date-picker>
+        </div>
       </div>
     </form>
+    <footer class="create__footer">
+      <button class="cancel">Cancel</button>
+      <button class="add-project">Add project</button>
+    </footer>
   </section>
-
 </template>
 
 <script lang="ts">
 import {Component} from "vue-property-decorator";
 import Vue from "vue";
+import DatePicker from "vue2-datepicker";
+import "vue2-datepicker/index.css"
 
 interface Status {
   status: string;
@@ -47,11 +68,18 @@ interface Status {
 }
 
 @Component({
-  name: "CreateProject"
+  name: "CreateProject",
+  components: {
+    DatePicker
+  }
+
 })
 
 export default class CreateProject extends Vue {
-  private checked: string = "";
+  private checked: string = "Not Started";
+  private select: string | null = null
+  private startTime: string | null = null;
+  private rangeTime: string[] | null = null;
   private statusInput: Status[] = [
     {
       status: "Not Started",
@@ -78,18 +106,19 @@ export default class CreateProject extends Vue {
 </script>
 
 <style lang="scss" scoped>
+@import "../assets/scss/mixins";
+
 .create {
   position: absolute;
   right: 10%;
   top: 20%;
   width: 450px;
-  height: 650px;
+  height: 515px;
   border: 2px rgba(70, 79, 96, 0.88) solid;
   border-radius: 15px;
   background-color: #E5E5E5;
 
   &__header {
-    width: 100%;
     height: 60px;
     padding: 20px;
     border-radius: 15px 15px 0 0;
@@ -98,10 +127,15 @@ export default class CreateProject extends Vue {
     font-weight: bold;
   }
 
+  &__project {
+    padding: 0 20px;
+  }
+
   .project-name {
     display: flex;
     flex-direction: column;
-    padding: 10px 20px;
+    padding: 20px 0;
+    font-weight: bold;
 
     &__label {
       margin-bottom: 10px;
@@ -118,7 +152,7 @@ export default class CreateProject extends Vue {
   .project-status {
     display: flex;
     flex-wrap: wrap;
-    padding: 10px 20px;
+    padding: 20px 0;
 
     &__title {
       width: 100%;
@@ -136,10 +170,61 @@ export default class CreateProject extends Vue {
       background-color: #fff;
       border: 1px #9fa5b0 solid;
       border-radius: 5px;
+      cursor: pointer;
     }
 
     &__radio {
       display: none;
+    }
+  }
+
+  .project-timeline {
+    display: grid;
+    grid-template: 30px 60px / 1fr 1fr;
+    padding: 20px 0;
+
+    &__title {
+      grid-column-start: 1;
+      grid-column-end: 3;
+    }
+
+    &__select {
+      @include searchBorder(150px, 6px);
+      padding: 5px 10px;
+    }
+
+    &__date {
+      .mx-datepicker {
+        width: 150px;
+      }
+    }
+
+    &__range {
+      .mx-datepicker {
+        width: 250px;
+      }
+    }
+  }
+
+  &__footer {
+    display: flex;
+    justify-content: flex-end;
+    height: 60px;
+    padding: 15px;
+    border-radius: 0 0 15px 15px;
+    background-color: #fff;
+
+    .cancel {
+      @include searchBorder(100px, 6px);
+      background-color: #fff;
+      border-color: #000;
+    }
+
+    .add-project {
+      @include searchBorder(130px, 6px);
+      margin-left: 20px;
+      background-color: #5E5ADB;
+      color: #fff;
     }
   }
 }

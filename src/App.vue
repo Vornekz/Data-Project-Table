@@ -27,6 +27,8 @@ export default class App extends Vue {
 </script>
 
 <style lang="scss">
+@import "assets/scss/normalize";
+
 * {
   margin: 0;
   padding: 0;
