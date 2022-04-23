@@ -8,7 +8,7 @@
         <label for="projectName" class="project-name__label">
           Project name
         </label>
-        <input type="text" class="project-name__input" required maxlength="30" id="projectName">
+        <input type="text" class="project-name__input" required maxlength="30" id="projectName" v-model="name">
       </div>
       <div class="project-status">
         <h4 class="project-status__title">Project status</h4>
@@ -16,7 +16,7 @@
                v-for="label in statusInput"
                :key="`label-${label.id}`"
                :for="label.id"
-               :class="{'checked': label.status === checked}"
+               :class="{'checked': label.status === status}"
         >
           {{ label.status }}
         </label>
@@ -27,18 +27,19 @@
                :key="`radio-${radio.id}`"
                :id="radio.id"
                :value="radio.status"
-               v-model="checked"
+               v-model="status"
                name="status"
         />
       </div>
       <div class="project-timeline">
         <h4 class="project-timeline__title">Project timeline</h4>
         <select name="timeGroup" id="timeGroup" v-model="select" class="project-timeline__select">
-          <option value="start" selected>Start time</option>
+          <option value="start">Start time</option>
           <option value="range">Range time</option>
         </select>
         <div class="project-timeline__date" v-if="select === 'start'">
-          <date-picker v-model="startTime" valueType="DD/MM/YYYY" format="DD/MM/YYYY" placeholder="DD/MM/YYYY" :required="select === 'start'">
+          <date-picker v-model="startTime" valueType="DD/MM/YYYY" format="DD/MM/YYYY" placeholder="DD/MM/YYYY"
+                       :required="select === 'start'">
           </date-picker>
         </div>
         <div class="project-timeline__range" v-if="select === 'range'">
@@ -51,16 +52,21 @@
     </form>
     <footer class="create__footer">
       <button class="cancel">Cancel</button>
-      <button class="add-project">Add project</button>
+      <button class="add-project" @click="newProjectAdd({name, status, timeline})">Add project
+      </button>
     </footer>
   </section>
 </template>
 
 <script lang="ts">
 import {Component} from "vue-property-decorator";
+import {namespace} from "vuex-class";
 import Vue from "vue";
 import DatePicker from "vue2-datepicker";
 import "vue2-datepicker/index.css"
+import {Options} from "@/store/modules/AddNewProject";
+
+const addNewProject = namespace("AddNewProject")
 
 interface Status {
   status: string;
@@ -76,10 +82,13 @@ interface Status {
 })
 
 export default class CreateProject extends Vue {
-  private checked: string = "Not Started";
-  private select: string | null = null
-  private startTime: string | null = null;
-  private rangeTime: string[] | null = null;
+  @addNewProject.Action protected newProjectAdd!: ({name, status, timeline}: Options) => object;
+
+  private name: string = "";
+  private status: string = "Not Started";
+  private select: string = "start";
+  private startTime: string = "";
+  private rangeTime: string[] = [""];
   private statusInput: Status[] = [
     {
       status: "Not Started",
@@ -102,7 +111,17 @@ export default class CreateProject extends Vue {
       id: "dropped"
     }
   ]
+
+  timeline(): string | string[] {
+    if (this.select === "start") {
+      return this.startTime
+    } else {
+      return this.rangeTime
+    }
+  }
 }
+
+
 </script>
 
 <style lang="scss" scoped>
@@ -110,8 +129,8 @@ export default class CreateProject extends Vue {
 
 .create {
   position: absolute;
-  right: 10%;
-  top: 20%;
+  left: 20%;
+  top: 25%;
   width: 450px;
   height: 515px;
   border: 2px rgba(70, 79, 96, 0.88) solid;
@@ -121,8 +140,8 @@ export default class CreateProject extends Vue {
   &__header {
     height: 60px;
     padding: 20px;
-    border-radius: 15px 15px 0 0;
-    background-color: #fff;
+    border-radius: 12px 12px 0 0;
+    background-color: rgba(134, 143, 160, 0.44);
     font-size: 18px;
     font-weight: bold;
   }
@@ -211,19 +230,20 @@ export default class CreateProject extends Vue {
     justify-content: flex-end;
     height: 60px;
     padding: 15px;
-    border-radius: 0 0 15px 15px;
-    background-color: #fff;
+    border-radius: 0 0 12px 12px;
+    background-color: rgba(134, 143, 160, 0.44);
 
     .cancel {
       @include searchBorder(100px, 6px);
       background-color: #fff;
-      border-color: #000;
+      border: none;
     }
 
     .add-project {
       @include searchBorder(130px, 6px);
       margin-left: 20px;
       background-color: #5E5ADB;
+      border: none;
       color: #fff;
     }
   }
