@@ -1,5 +1,5 @@
 <template>
-  <section class="create">
+  <section class="create" v-if="windowClosed">
     <header class="create__header">
       <h3>Add new Project</h3>
     </header>
@@ -51,20 +51,21 @@
       </div>
     </form>
     <footer class="create__footer">
-      <button class="cancel">Cancel</button>
-      <button class="add-project" @click="newProjectAdd({name, status, timeline})">Add project
+      <button class="cancel" @click="closeOpenWindow">Cancel</button>
+      <button class="add-project" @click="addAndClose(name, status, timeline)">Add project
       </button>
     </footer>
   </section>
 </template>
 
 <script lang="ts">
-import {Component} from "vue-property-decorator";
+import {Component, Prop} from "vue-property-decorator";
 import {namespace} from "vuex-class";
 import Vue from "vue";
 import DatePicker from "vue2-datepicker";
 import "vue2-datepicker/index.css"
 import {Options} from "@/store/modules/AddNewProject";
+import {types} from "sass";
 
 const addNewProject = namespace("AddNewProject")
 
@@ -84,11 +85,14 @@ interface Status {
 export default class CreateProject extends Vue {
   @addNewProject.Action protected newProjectAdd!: ({name, status, timeline}: Options) => object;
 
+  @Prop({type: Boolean, required: true}) readonly windowClosed!: boolean;
+  @Prop({type: Function, required: true}) readonly closeOpenWindow!: () => void;
+
   private name: string = "";
   private status: string = "Not Started";
   private select: string = "start";
-  private startTime: string = "";
-  private rangeTime: string[] = [""];
+  private startTime: string | null = null;
+  private rangeTime: string[] | null = null;
   private statusInput: Status[] = [
     {
       status: "Not Started",
@@ -112,11 +116,21 @@ export default class CreateProject extends Vue {
     }
   ]
 
-  timeline(): string | string[] {
+  timeline(): string | string[] | null {
     if (this.select === "start") {
       return this.startTime
     } else {
       return this.rangeTime
+    }
+  }
+
+  addAndClose(name: string, status: string, timeline: () => string | string[] | null) {
+    if (name === "") {
+      let nameSpace: HTMLInputElement | null = document.querySelector(".project-name__input");
+      nameSpace!.style.borderColor = "red";
+    } else {
+      this.newProjectAdd({name, status, timeline})
+      this.closeOpenWindow()
     }
   }
 }

@@ -31,7 +31,7 @@
           <input type="search" name="search" id="search" class="search__input-place" placeholder="Search">
         </div>
       </form>
-      <button class="mainNav__button">
+      <button class="mainNav__button" @click="closeOpenWindow">
         <svg>
           <use xlink:href="@/assets/sprite.svg#plus"></use>
         </svg>
@@ -39,7 +39,7 @@
       </button>
     </div>
     <MainNavGroup class="mainNavGroup"/>
-    <CreateProject/>
+    <CreateProject :window-closed="windowClosed" :close-open-window="closeOpenWindow"/>
   </section>
 </template>
 
@@ -58,6 +58,12 @@ import CreateProject from "@/components/CreateProject.vue";
 })
 
 export default class MainNav extends Vue {
+
+  private windowClosed: boolean = false;
+
+  closeOpenWindow() {
+    this.windowClosed = !this.windowClosed
+  }
 
   get selectedCheckbox(): number {
     return 24
